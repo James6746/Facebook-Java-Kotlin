@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="100dp"
+        android:layout_height="160dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/shape_border_rounded"
+        android:padding="0.5dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_background"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/rounded_border_2" />
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:background="@drawable/shape_border_rounded_2"
+            android:layout_height="0dp"
+            android:gravity="center_horizontal|bottom"
+            android:paddingBottom="5dp"
+            android:textSize="11sp"
+            android:text="Create \nStory"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_background" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/white"
+            android:padding="3dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_baseline_add_24"
+            android:tint="@color/white"
+            app:backgroundTint="#1e90ff"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_background"
+            app:shapeAppearance="@style/circle"
+            app:strokeColor="#FFFFFF"
+            app:strokeWidth="3dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>
+
+
+
+
