@@ -1,7 +1,8 @@
 package com.example.facebookjava;
 
-public class Story {
+import java.util.UUID;
 
+public class Story {
     private int profile;
     private String fullname;
     public boolean isAddStroyView = false;
@@ -11,7 +12,7 @@ public class Story {
         this.fullname = fullname;
     }
 
-    public Story(){
+    public Story() {
         isAddStroyView = true;
     }
 

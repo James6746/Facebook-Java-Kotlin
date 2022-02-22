@@ -1,6 +1,7 @@
 package com.example.facebookjava;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,27 +15,53 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+
+import kotlin.jvm.internal.markers.KMutableMap;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context context;
-    private ArrayList<Feed> items;
+    private final Context context;
+    private final ArrayList<Feed> items;
+    AddNewPostListener addNewPostListener;
+    HashMap<String, Parcelable> scrollStates = new HashMap<>();
 
     private final int TYPE_ITEM_HEAD = 0;
     private final int TYPE_ITEM_STORY = 1;
     private final int TYPE_ITEM_POST = 2;
     private final int TYPE_ITEM_POST_EDIT = 3;
     private final int TYPE_ITEM_5_MORE = 4;
+    private final int TYPE_NEW_ADDED_POST = 5;
 
 
-    public FeedAdapter(Context context, ArrayList<Feed> items) {
+    public FeedAdapter(Context context, ArrayList<Feed> items, AddNewPostListener addNewPostListener) {
         this.context = context;
         this.items = items;
+        this.addNewPostListener = addNewPostListener;
+    }
+
+
+    private String getSectionID(int position) {
+        return items.get(position).getId();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if(holder instanceof StoryViewHolder){
+            String key = getSectionID(holder.getAdapterPosition());
+            scrollStates.put(key, Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).onSaveInstanceState());
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
         Feed feed = items.get(position);
+
+        if (feed.getNewAddedPost() != null) {
+            return TYPE_NEW_ADDED_POST;
+        }
 
         if (feed.isHeader()) {
             return TYPE_ITEM_HEAD;
@@ -55,6 +82,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        if (viewType == TYPE_NEW_ADDED_POST) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feed_new_post, parent, false);
+            return new NewPostViewHolder(view);
+        }
 
         if (viewType == TYPE_ITEM_HEAD) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feed_head, parent, false);
@@ -79,11 +111,29 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         Feed feed = items.get(position);
 
+
+
         if (holder instanceof HeadViewHolder) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addNewPostListener.addNewPost(holder.getLayoutPosition());
+                }
+            });
 
         }
 
+
         if (holder instanceof StoryViewHolder) {
+            String key = getSectionID(holder.getLayoutPosition());
+            Parcelable state = scrollStates.get(key);
+
+            if (state != null) {
+                Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).onRestoreInstanceState(state);
+            } else {
+                Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).scrollToPosition(7);
+            }
+
             refreshAdapter(feed.getStories(), ((StoryViewHolder) holder).recyclerView);
         }
 
@@ -97,6 +147,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private void refreshAdapter(ArrayList<Story> stories, RecyclerView recyclerView) {
         StoryAdapter adapter = new StoryAdapter(context, stories);
         recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
+
     }
 
     @Override
@@ -144,10 +197,22 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public static class NewPostViewHolder extends RecyclerView.ViewHolder {
+        public NewPostViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
     public static class PostMoreThan5VH extends RecyclerView.ViewHolder {
         public PostMoreThan5VH(@NonNull View itemView) {
             super(itemView);
 
         }
     }
+
+    public interface AddNewPostListener {
+        public void addNewPost(int position);
+    }
+
+
 }

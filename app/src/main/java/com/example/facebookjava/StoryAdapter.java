@@ -12,11 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class StoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static int IS_ADD_STORY_VIEW = 0;
-    public static int IS_COMMON_ITEM= 1;
+    public static int IS_COMMON_ITEM = 1;
 
     private Context context;
     private ArrayList<Story> stories;
@@ -28,7 +29,7 @@ public class StoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if(stories.get(position).isAddStroyView){
+        if (stories.get(position).isAddStroyView) {
             return IS_ADD_STORY_VIEW;
         } else {
             return IS_COMMON_ITEM;
@@ -38,7 +39,7 @@ public class StoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == IS_ADD_STORY_VIEW){
+        if (viewType == IS_ADD_STORY_VIEW) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_story_add_view, parent, false);
             return new AddItemViewHolder(view);
         } else {
@@ -81,10 +82,11 @@ public class StoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public class AddItemViewHolder extends RecyclerView.ViewHolder{
+    public static class AddItemViewHolder extends RecyclerView.ViewHolder {
 
         public AddItemViewHolder(@NonNull View itemView) {
             super(itemView);
         }
     }
+
 }

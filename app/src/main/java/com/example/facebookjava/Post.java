@@ -7,26 +7,15 @@ public class Post {
     public boolean isEditedView = false;
     boolean moreThan5 = false;
 
-    public int getProfile() { return profile; }
 
-    public void setProfile(int profile) {
-        this.profile = profile;
-    }
+    public int getProfile() { return profile; }
 
     public String getFullname() {
         return fullname;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
     public int getPhoto() {
         return photo;
-    }
-
-    public void setPhoto(int photo) {
-        this.photo = photo;
     }
 
     public Post(int profile, String fullname, int photo) {
@@ -42,4 +31,6 @@ public class Post {
     public Post(boolean moreThan5) {
         this.moreThan5 = moreThan5;
     }
+
+
 }

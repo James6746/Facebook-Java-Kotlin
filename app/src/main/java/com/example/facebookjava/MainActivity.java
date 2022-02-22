@@ -1,8 +1,13 @@
 package com.example.facebookjava;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,7 +16,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecyclerView recyclerView;
+    public RecyclerView recyclerView;
+    public FeedAdapter adapter;
+    public ArrayList<Feed> feeds;
+    private FeedAdapter.AddNewPostListener addNewPostListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,16 +29,43 @@ public class MainActivity extends AppCompatActivity {
         initViews();
     }
 
-    void initViews() {
+    public void initViews() {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+
+        ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+
+                            Intent data = result.getData();
+                            assert data != null;
+                            Bundle bundle = data.getExtras();
+                            feeds.add(2, new Feed((NewAddedPost) bundle.getParcelable("newPost")));
+
+                            adapter.notifyItemInserted(feeds.size() - 1);
+
+                        }
+                    }
+                });
+
+
+        addNewPostListener = new FeedAdapter.AddNewPostListener() {
+            @Override
+            public void addNewPost(int position) {
+                Intent intent = new Intent(getApplicationContext(), CreatePostActivity.class);
+                someActivityResultLauncher.launch(intent);
+            }
+        };
 
         refreshAdapter(getAllFeeds());
 
     }
 
     public final void refreshAdapter(ArrayList<Feed> feeds) {
-        FeedAdapter adapter = new FeedAdapter(this, feeds);
+        adapter = new FeedAdapter(this, feeds, addNewPostListener);
         recyclerView.setAdapter(adapter);
     }
 
@@ -52,11 +87,13 @@ public class MainActivity extends AppCompatActivity {
         stories.add(new Story(R.drawable.james, "Jamshid Sobirov"));
 
 
-        ArrayList<Feed> feeds = new ArrayList<>();
+        feeds = new ArrayList<>();
 
-        feeds.add(new Feed());
 
-        feeds.add(new Feed(stories));
+        feeds.add(new Feed()); //Header
+
+        feeds.add(new Feed(stories));//Story
+
 
         feeds.add(new Feed(new Post()));
 
@@ -80,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         feeds.add(new Feed(new Post(R.drawable.profile4, "Mary Magdalena", R.drawable.photo4)));
         feeds.add(new Feed(new Post(R.drawable.profile5, "Jorge Bush", R.drawable.photo5)));
         feeds.add(new Feed(new Post(R.drawable.james, "Sobirov Jamshid", R.drawable.photo6)));
+
 
         return feeds;
     }
