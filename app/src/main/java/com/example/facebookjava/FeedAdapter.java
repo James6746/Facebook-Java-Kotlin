@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-import kotlin.jvm.internal.markers.KMutableMap;
-
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
@@ -49,7 +47,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        if(holder instanceof StoryViewHolder){
+        if (holder instanceof StoryViewHolder) {
             String key = getSectionID(holder.getAdapterPosition());
             scrollStates.put(key, Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).onSaveInstanceState());
         }
@@ -112,7 +110,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Feed feed = items.get(position);
 
 
-
         if (holder instanceof HeadViewHolder) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -131,10 +128,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (state != null) {
                 Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).onRestoreInstanceState(state);
             } else {
-                Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).scrollToPosition(7);
+                Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).scrollToPosition(0);
+                refreshAdapter(feed.getStories(), ((StoryViewHolder) holder).recyclerView);
             }
 
-            refreshAdapter(feed.getStories(), ((StoryViewHolder) holder).recyclerView);
+
         }
 
         if (holder instanceof PostViewHolder) {
