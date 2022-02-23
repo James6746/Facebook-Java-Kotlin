@@ -42,6 +42,8 @@
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="16dp"
                         android:backgroundTint="#545BED"
+                        android:enabled="false"
+                        android:textColor="@color/white"
                         android:insetLeft="0dp"
                         android:insetTop="0dp"
                         android:insetRight="0dp"
@@ -107,10 +109,10 @@
                     android:layout_height="wrap_content">
 
                     <LinearLayout
-                        android:gravity="center_vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/spinner_bk">
+                        android:background="@drawable/spinner_bk"
+                        android:gravity="center_vertical">
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -135,30 +137,29 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:gravity="center_vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
                         android:background="@drawable/spinner_bk"
-                        android:layout_marginStart="5dp">
+                        android:gravity="center_vertical">
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_baseline_public_24"
-                            android:layout_marginStart="3dp"
                             android:layout_marginVertical="3dp"
-                            />
+                            android:layout_marginStart="3dp"
+                            android:src="@drawable/ic_baseline_public_24" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Public"/>
+                            android:text="Public" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_baseline_arrow_drop_down_24"
                             android:layout_marginEnd="3dp"
+                            android:src="@drawable/ic_baseline_arrow_drop_down_24"
 
                             />
                     </LinearLayout>
@@ -175,51 +176,68 @@
 
             <EditText
                 android:id="@+id/et_text"
-                android:padding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:hint="What's on your mind?"/>
+                android:hint="What's on your mind?"
+                android:padding="8dp" />
 
-            <LinearLayout
-                android:visibility="visible"
+            <FrameLayout
+                android:id="@+id/content_for_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_margin="8dp"
-                android:background="#EFEEEB">
-
-                <ImageView
-                    android:id="@+id/iv_content_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/photo"/>
+                android:visibility="gone">
 
                 <LinearLayout
-                    android:paddingBottom="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_height="match_parent"
+                    android:background="#EFEEEB"
                     android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/tv_content_source"
-                        android:layout_width="wrap_content"
+
+                    <ImageView
+                        android:id="@+id/iv_content_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/photo" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="YOUTUBE.COM"/>
+                        android:layout_margin="10dp"
+                        android:orientation="vertical"
+                        android:paddingBottom="10dp">
 
-                    <TextView
-                        android:id="@+id/tv_content_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="This is the title of the content"
-                        android:textColor="@color/black"/>
+                        <TextView
+                            android:id="@+id/tv_content_source"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAllCaps="true"
+                            android:text="YOUTUBE.COM" />
 
-
-
+                        <TextView
+                            android:id="@+id/tv_content_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="This is the title of the content"
+                            android:textColor="@color/black" />
+                    </LinearLayout>
                 </LinearLayout>
 
-            </LinearLayout>
+                <ImageButton
+                    android:id="@+id/imbtn_edditText"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:tint="@color/white"
+                    android:src="@drawable/ic_outline_close_24"
+                    android:backgroundTint="#0FFFFFFF"/>
+
+
+            </FrameLayout>
+
+
         </LinearLayout>
     </LinearLayout>
 

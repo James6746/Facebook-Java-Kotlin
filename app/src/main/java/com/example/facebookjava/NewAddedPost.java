@@ -8,9 +8,9 @@ public class NewAddedPost implements Parcelable {
     private String content;
     private String contentSource;
     private String contentTitle;
-    private int contentImage;
+    private String contentImage;
 
-    public NewAddedPost(String content, String contentSource, String contentTitle, int contentImage) {
+    public NewAddedPost(String content, String contentSource, String contentTitle, String contentImage) {
         this.content = content;
         this.contentSource = contentSource;
         this.contentTitle = contentTitle;
@@ -21,7 +21,7 @@ public class NewAddedPost implements Parcelable {
         content = in.readString();
         contentSource = in.readString();
         contentTitle = in.readString();
-        contentImage = in.readInt();
+        contentImage = in.readString();
     }
 
     public static final Creator<NewAddedPost> CREATOR = new Creator<NewAddedPost>() {
@@ -36,15 +36,6 @@ public class NewAddedPost implements Parcelable {
         }
     };
 
-    @Override
-    public String toString() {
-        return "NewAddedPost{" +
-                "content='" + content + '\'' +
-                ", contentSource='" + contentSource + '\'' +
-                ", contentTitle='" + contentTitle + '\'' +
-                ", contentImage=" + contentImage +
-                '}';
-    }
 
     public String getContent() {
         return content;
@@ -58,7 +49,7 @@ public class NewAddedPost implements Parcelable {
         return contentTitle;
     }
 
-    public int getContentImage() {
+    public String getContentImage() {
         return contentImage;
     }
 
@@ -72,6 +63,6 @@ public class NewAddedPost implements Parcelable {
         parcel.writeString(content);
         parcel.writeString(contentSource);
         parcel.writeString(contentTitle);
-        parcel.writeInt(contentImage);
+        parcel.writeString(contentImage);
     }
 }

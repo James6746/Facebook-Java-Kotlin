@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                             Bundle bundle = data.getExtras();
                             feeds.add(2, new Feed((NewAddedPost) bundle.getParcelable("newPost")));
 
-                            adapter.notifyItemInserted(feeds.size() - 1);
+                            adapter.notifyItemInserted(2);
 
                         }
                     }
@@ -121,6 +121,5 @@ public class MainActivity extends AppCompatActivity {
 
         return feeds;
     }
-
 
 }

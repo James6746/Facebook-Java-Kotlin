@@ -2,6 +2,7 @@ package com.example.facebookjava;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +13,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
     private final ArrayList<Feed> items;
     AddNewPostListener addNewPostListener;
+
     HashMap<String, Parcelable> scrollStates = new HashMap<>();
+
 
     private final int TYPE_ITEM_HEAD = 0;
     private final int TYPE_ITEM_STORY = 1;
@@ -40,18 +43,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    private String getSectionID(int position) {
-        return items.get(position).getId();
-    }
+//    private String getSectionID(int position) {
+//        return items.get(position).getId();
+//    }
 
-    @Override
-    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (holder instanceof StoryViewHolder) {
-            String key = getSectionID(holder.getAdapterPosition());
-            scrollStates.put(key, Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).onSaveInstanceState());
-        }
-    }
+//    @Override
+//    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+//        super.onViewRecycled(holder);
+//        if (holder instanceof StoryViewHolder) {
+//            String key = getSectionID(holder.getAdapterPosition());
+//            scrollStates.put(key, Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).onSaveInstanceState());
+//        }
+//    }
 
     @Override
     public int getItemViewType(int position) {
@@ -91,7 +94,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return new HeadViewHolder(view);
         } else if (viewType == TYPE_ITEM_STORY) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feed_story, parent, false);
-            return new StoryViewHolder(context, view);
+            return new StoryViewHolder(view);
         } else if (viewType == TYPE_ITEM_POST_EDIT) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feed_edited, parent, false);
             return new PostViewHolderEdited(view);
@@ -109,6 +112,29 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         Feed feed = items.get(position);
 
+        if (holder instanceof NewPostViewHolder) {
+
+            if (items.get(position).getNewAddedPost().getContentImage().equals("")) {
+                ((ImageView) holder.itemView.findViewById(R.id.iv_content_photo)).setVisibility(View.GONE);
+            } else {
+                ((ImageView) holder.itemView.findViewById(R.id.iv_content_photo)).setVisibility(View.VISIBLE);
+                Glide.with(context)
+                        .load(items.get(position).getNewAddedPost().getContentImage())
+                        .into((ImageView) holder.itemView.findViewById(R.id.iv_content_photo));
+            }
+
+            if(items.get(position).getNewAddedPost().getContentTitle().equals("")){
+                holder.itemView.findViewById(R.id.content_container).setVisibility(View.GONE);
+            } else {
+                holder.itemView.findViewById(R.id.content_container).setVisibility(View.VISIBLE);
+            }
+
+            ((TextView) holder.itemView.findViewById(R.id.tv_content_title)).setText(items.get(position).getNewAddedPost().getContentTitle());
+            ((TextView) holder.itemView.findViewById(R.id.tv_content_source)).setText(items.get(position).getNewAddedPost().getContentSource());
+            ((TextView) holder.itemView.findViewById(R.id.tv_content)).setText(items.get(position).getNewAddedPost().getContent());
+
+        }
+
 
         if (holder instanceof HeadViewHolder) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -121,21 +147,31 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
 
+//        if (holder instanceof StoryViewHolder) {
+//            String key = getSectionID(holder.getLayoutPosition());
+//            Parcelable state = scrollStates.get(key);
+//
+//            if (state != null) {
+//                Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).onRestoreInstanceState(state);
+//            } else {
+////                Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).scrollToPosition(0);
+//                refreshAdapter(feed.getStories(), ((StoryViewHolder) holder).recyclerView);
+//            }
+//
+//
+//        }
+
         if (holder instanceof StoryViewHolder) {
-            String key = getSectionID(holder.getLayoutPosition());
-            Parcelable state = scrollStates.get(key);
+            if (((StoryViewHolder) holder).adapter == null) {
 
-            if (state != null) {
-                Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).onRestoreInstanceState(state);
-            } else {
-                Objects.requireNonNull(((StoryViewHolder) holder).recyclerView.getLayoutManager()).scrollToPosition(0);
-                refreshAdapter(feed.getStories(), ((StoryViewHolder) holder).recyclerView);
+                Log.d("@@@ABC", "Refreshing....");
+                ((StoryViewHolder) holder).adapter = new StoryAdapter(context, feed.getStories());
+                ((StoryViewHolder) holder).recyclerView.setAdapter(((StoryViewHolder) holder).adapter);
             }
-
-
         }
 
         if (holder instanceof PostViewHolder) {
+//            ((PostViewHolder) holder).iv_profile.setBackground(App.instance.getDrawable(R.drawable.photo3));
             ((PostViewHolder) holder).iv_profile.setImageResource(feed.getPost().getProfile());
             ((PostViewHolder) holder).iv_photo.setImageResource(feed.getPost().getPhoto());
             ((PostViewHolder) holder).tv_fullname.setText(feed.getPost().getFullname());
@@ -145,9 +181,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private void refreshAdapter(ArrayList<Story> stories, RecyclerView recyclerView) {
         StoryAdapter adapter = new StoryAdapter(context, stories);
         recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setNestedScrollingEnabled(false);
-
     }
 
     @Override
@@ -165,12 +198,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         Context context;
         RecyclerView recyclerView;
+        StoryAdapter adapter;
+        RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
-        public StoryViewHolder(Context context, @NonNull View itemView) {
+        public StoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.context = context;
             recyclerView = itemView.findViewById(R.id.recyclerView);
-            LinearLayoutManager manager = new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false);
+            LinearLayoutManager manager = new LinearLayoutManager(App.instance, RecyclerView.HORIZONTAL, false);
+//            manager.setInitialPrefetchItemCount(4);
+//            recyclerView.setRecycledViewPool(viewPool);
+//            recyclerView.setHasFixedSize(true);
+//            recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(manager);
         }
     }
@@ -209,7 +247,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public interface AddNewPostListener {
-        public void addNewPost(int position);
+        void addNewPost(int position);
     }
 
 

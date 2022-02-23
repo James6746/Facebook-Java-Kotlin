@@ -12,7 +12,8 @@ public class Feed implements Parcelable {
     private Post post = null;
     private NewAddedPost newAddedPost = null;
     private ArrayList<Story> stories = new ArrayList<Story>();
-    private String id = UUID.randomUUID().toString();
+
+//    private String id = UUID.randomUUID().toString();
 
     protected Feed(Parcel in) {
         isHeader = in.readByte() != 0;
@@ -76,7 +77,7 @@ public class Feed implements Parcelable {
         parcel.writeByte((byte) (isHeader ? 1 : 0));
     }
 
-    public String getId() {
-        return id;
-    }
+//    public String getId() {
+//        return id;
+//    }
 }

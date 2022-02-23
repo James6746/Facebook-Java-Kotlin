@@ -71,6 +71,10 @@
             android:orientation="vertical">
 
             <TextView
+                android:textColorLink="#059BFF"
+                android:textColor="@color/black"
+                android:autoLink="all"
+                android:linksClickable="true"
                 android:id="@+id/tv_content"
                 android:padding="8dp"
                 android:text="smth..."
@@ -79,6 +83,7 @@
                 android:background="@color/white" />
 
             <LinearLayout
+                android:id="@+id/content_container"
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,6 +105,7 @@
                     android:layout_margin="10dp"
                     android:orientation="vertical">
                     <TextView
+                        android:textAllCaps="true"
                         android:id="@+id/tv_content_source"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
