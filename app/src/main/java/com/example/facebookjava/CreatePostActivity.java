@@ -138,9 +138,9 @@ public class CreatePostActivity extends AppCompatActivity {
             Document doc;
 
             try {
-                if (url.contains("http://")) {
-                    url = "https://" + url.substring(7);
-                }
+//                if (url.contains("http://")) {
+//                    url = "https://" + url.substring(7);
+//                }
                 doc = Jsoup.connect(url).get();
 
                 try {
